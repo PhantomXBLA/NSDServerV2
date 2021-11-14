@@ -12,7 +12,7 @@ public class NetworkedServer : MonoBehaviour
     int reliableChannelID;
     int unreliableChannelID;
     int hostID;
-    int socketPort = 5491;
+    int socketPort = 5491; //change back to 5491
 
     LinkedList<PlayerAccount> playerAccounts;
 
@@ -189,8 +189,9 @@ public class NetworkedServer : MonoBehaviour
         else if (signifier == ClientToServerSignifiers.InGame)
         {
             GameRoom gr = GetGameRoomWithClientID(id);
+            int GameSignifier = int.Parse(csv[1]);
 
-            if(gr != null)
+            if (gr != null)
             {
                 if(gr.playerID1 == id)
                 {
@@ -199,6 +200,12 @@ public class NetworkedServer : MonoBehaviour
                 else
                 {
                     SendMessageToClient(ServerToClientSignifiers.OpponentPlay + "", gr.playerID1);
+                }
+
+                if(GameSignifier == GameSignifiers.PlayerMoved)
+                {
+                    //Debug.Log("PlayerInputReceived");
+                    Debug.Log(int.Parse(csv[2]));
                 }
             }
         }
@@ -292,6 +299,11 @@ public static class ClientToServerSignifiers
 
     public const int JoinGameRoomQueue = 3;
     public const int InGame = 4;
+}
+
+public static class GameSignifiers
+{
+    public const int PlayerMoved = 1;
 }
 
 public static class ServerToClientSignifiers
