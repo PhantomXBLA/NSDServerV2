@@ -14,6 +14,8 @@ public class NetworkedServer : MonoBehaviour
     int hostID;
     int socketPort = 5491;
 
+    LinkedList<PlayerAccount> playerAccounts;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +25,8 @@ public class NetworkedServer : MonoBehaviour
         unreliableChannelID = config.AddChannel(QosType.Unreliable);
         HostTopology topology = new HostTopology(config, maxConnections);
         hostID = NetworkTransport.AddHost(topology, socketPort, null);
+
+        playerAccounts = new LinkedList<PlayerAccount>();
 
     }
 
@@ -73,9 +77,36 @@ public class NetworkedServer : MonoBehaviour
 
         int signifier = int.Parse(csv[0]);
 
+
+
         if (signifier == ClientToServerSignifiers.CreateAccount)
         {
             Debug.Log("create account");
+
+            string n = csv[1];
+            string p = csv[2];
+
+            bool nameUsed = false;
+
+            foreach(PlayerAccount pa in playerAccounts)
+            {
+                if(pa.username == n)
+                {
+                    nameUsed = true;
+                }
+
+                if (nameUsed)
+                {
+                    SendMessageToClient(ServerToClientSignifiers.AccountCreationFailed + "", id);
+                }
+                else
+                {
+                    PlayerAccount newPlayerAccount = new PlayerAccount(n, p);
+                    playerAccounts.AddLast(newPlayerAccount);
+                    SendMessageToClient(ServerToClientSignifiers.AccountCreationComplete + "", id);
+                }
+            }
+
         } 
         else if (signifier == ClientToServerSignifiers.Login)
         {
@@ -85,6 +116,21 @@ public class NetworkedServer : MonoBehaviour
 
     }
 
+}
+
+
+
+public class PlayerAccount
+{
+    public string username;
+    public string password;
+
+
+    public PlayerAccount(string Username, string Password)
+    {
+        username = Username;
+        password = Password;
+    }
 }
 
 public static class ClientToServerSignifiers
