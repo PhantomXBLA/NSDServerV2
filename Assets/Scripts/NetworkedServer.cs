@@ -16,6 +16,10 @@ public class NetworkedServer : MonoBehaviour
 
     LinkedList<PlayerAccount> playerAccounts;
 
+    const int PlayerAccountNamePassword = 1;
+
+    string playerAccountsFilePath;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +30,9 @@ public class NetworkedServer : MonoBehaviour
         HostTopology topology = new HostTopology(config, maxConnections);
         hostID = NetworkTransport.AddHost(topology, socketPort, null);
 
+        playerAccountsFilePath = Application.dataPath + Path.DirectorySeparatorChar + "PlayerAccounts.txt";
         playerAccounts = new LinkedList<PlayerAccount>();
+        LoadPlayerAccounts();
 
     }
 
@@ -88,26 +94,30 @@ public class NetworkedServer : MonoBehaviour
 
             bool nameUsed = false;
 
-            foreach(PlayerAccount pa in playerAccounts)
+            foreach (PlayerAccount pa in playerAccounts)
             {
-                if(pa.username == n)
-                {
+                if (pa.username == n)
                     nameUsed = true;
-                }
-
-                if (nameUsed)
-                {
-                    SendMessageToClient(ServerToClientSignifiers.AccountCreationFailed + "", id);
-                }
-                else
-                {
-                    PlayerAccount newPlayerAccount = new PlayerAccount(n, p);
-                    playerAccounts.AddLast(newPlayerAccount);
-                    SendMessageToClient(ServerToClientSignifiers.AccountCreationComplete + "", id);
-                }
+                    break;
             }
 
-        } 
+            if (nameUsed)
+            {
+                SendMessageToClient(ServerToClientSignifiers.AccountCreationFailed + "", id);
+            }
+            else
+            {
+                PlayerAccount newPlayerAccount = new PlayerAccount(n, p);
+                playerAccounts.AddLast(newPlayerAccount);
+                SendMessageToClient(ServerToClientSignifiers.AccountCreationComplete + "", id);
+
+                SavePlayerAccounts();
+
+
+
+            }
+
+        }
         else if (signifier == ClientToServerSignifiers.Login)
         {
             Debug.Log("login to account");
@@ -116,7 +126,44 @@ public class NetworkedServer : MonoBehaviour
 
     }
 
+    private void SavePlayerAccounts()
+    {
+        StreamWriter sw = new StreamWriter(playerAccountsFilePath);
+
+        foreach(PlayerAccount pa in playerAccounts)
+        {
+            sw.WriteLine(PlayerAccountNamePassword + "," + pa.username + "," + pa.password);
+        }
+
+        sw.Close();
+    }
+
+    private void LoadPlayerAccounts()
+    {
+        if (File.Exists(playerAccountsFilePath))
+        {
+
+            StreamReader sr = new StreamReader(playerAccountsFilePath);
+
+            string line;
+
+            while ((line = sr.ReadLine()) != null)
+            {
+                 string[] csv = line.Split(',');
+                 int signifier = int.Parse(csv[0]);
+
+                if(signifier == PlayerAccountNamePassword)
+                {
+                    PlayerAccount pa = new PlayerAccount(csv[1], csv[2]);
+                    playerAccounts.AddLast(pa);
+                }
+            }
+        sr.Close();
+        }
+    }
+
 }
+
 
 
 
