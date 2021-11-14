@@ -215,6 +215,11 @@ public class PlayerAccount
     }
 }
 
+public class GameRoom
+{
+    public PlayerAccount player1, player2;
+}
+
 public static class ClientToServerSignifiers
 {
     public const int CreateAccount = 1;
