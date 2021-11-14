@@ -34,6 +34,9 @@ public class NetworkedServer : MonoBehaviour
         playerAccounts = new LinkedList<PlayerAccount>();
         LoadPlayerAccounts();
 
+        foreach (PlayerAccount pa in playerAccounts)
+            Debug.Log(pa.username + " " + pa.password);
+
     }
 
     // Update is called once per frame
@@ -121,6 +124,38 @@ public class NetworkedServer : MonoBehaviour
         else if (signifier == ClientToServerSignifiers.Login)
         {
             Debug.Log("login to account");
+
+            string n = csv[1];
+            string p = csv[2];
+            bool hasNameBeenFound = false;
+            bool msgSentToClient = false;
+
+            foreach (PlayerAccount pa in playerAccounts)
+            {
+                if(pa.username == n)
+                {
+                    hasNameBeenFound = true;
+                    if(pa.password == p)
+                    {
+                        SendMessageToClient(ServerToClientSignifiers.LoginComplete + "", id);
+                        msgSentToClient = true;
+
+
+                    }
+                    else
+                    {
+                        SendMessageToClient(ServerToClientSignifiers.LoginFailed + "", id);
+                        msgSentToClient = true;
+                    }
+                }
+            }
+
+
+            if (!hasNameBeenFound && !msgSentToClient)
+            {
+                    SendMessageToClient(ServerToClientSignifiers.LoginFailed + "", id);
+            }
+
         }
 
 
