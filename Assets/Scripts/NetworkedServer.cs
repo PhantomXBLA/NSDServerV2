@@ -204,8 +204,6 @@ public class NetworkedServer : MonoBehaviour
 
                 if(GameSignifier == GameSignifiers.PlayerMoved)
                 {
-                    //Debug.Log("PlayerInputReceived");
-                    //int move = int.Parse(csv[2]);
                
                     string buttonName = csv[2];
                     float posX = float.Parse(csv[3]);
@@ -216,10 +214,10 @@ public class NetworkedServer : MonoBehaviour
                         Debug.Log("MoveFromP1");
                         SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName, gr.playerID2);
                     }
-                    else
+                    else if(gr.playerID2 == id)
                     {
                         Debug.Log("MoveFromP2");
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName, gr.playerID1);
                     }
                 }
             }
