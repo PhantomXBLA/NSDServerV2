@@ -25,9 +25,10 @@ public class NetworkedServer : MonoBehaviour
     int playerWaitingForMatchWithID = -1;
 
     LinkedList<GameRoom> gameRooms;
-    LinkedList<ReplayMoves> replayMoves;
 
     int playerTurn = 1;
+
+    LinkedList<string> replayMoves;
     
 
     // Start is called before the first frame update
@@ -42,12 +43,16 @@ public class NetworkedServer : MonoBehaviour
 
         playerAccountsFilePath = Application.dataPath + Path.DirectorySeparatorChar + "PlayerAccounts.txt";
         playerAccounts = new LinkedList<PlayerAccount>();
+
+
         LoadPlayerAccounts();
 
         foreach (PlayerAccount pa in playerAccounts)
             Debug.Log(pa.username + " " + pa.password);
 
         gameRooms = new LinkedList<GameRoom>();
+
+        replayMoves = new LinkedList<string>();
 
     }
 
@@ -240,6 +245,20 @@ public class NetworkedServer : MonoBehaviour
                             Debug.Log("MoveFromP1");
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
+
+                            string move = buttonName;
+                            replayMoves.AddLast(move);
+
+                            if (replayMoves.Contains("Center"))
+                            {
+                                Debug.Log("ye");
+                            }
+                            else
+                            {
+                                Debug.Log("nah");
+                            }
+
+
                             playerTurn = 2;
 
                         }
@@ -344,11 +363,6 @@ public class GameRoom
         playerID1 = PlayerID1;
         playerID2 = PlayerID2;
     }
-}
-
-public class ReplayMoves
-{
-
 }
 
 public static class ClientToServerSignifiers
