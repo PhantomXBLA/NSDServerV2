@@ -25,6 +25,7 @@ public class NetworkedServer : MonoBehaviour
     int playerWaitingForMatchWithID = -1;
 
     LinkedList<GameRoom> gameRooms;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -204,7 +205,23 @@ public class NetworkedServer : MonoBehaviour
                     SendMessageToClient(ServerToClientSignifiers.OpponentPlay + "", gr.playerID1);
                 }
 
-                if(GameSignifier == GameSignifiers.PlayerMoved)
+            if(GameSignifier == ChatSignifiers.PremadeMessage)
+                {
+                    string premadeMessage = csv[2];
+                    Debug.Log(premadeMessage);
+
+                    if (gr.playerID1 == id) 
+                    {
+                        SendMessageToClient(ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID2);
+                    }
+                    else if (gr.playerID2 == id)
+                    {
+                        SendMessageToClient(ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID1);
+                    }
+
+                }
+
+                if (GameSignifier == GameSignifiers.PlayerMoved)
                 {
                
                     string buttonName = csv[2];
@@ -327,6 +344,11 @@ public static class GameSignifiers
     public const int PlayerMoved = 1;
 }
 
+public static class ChatSignifiers
+{
+    public const int PremadeMessage = 2;
+    public const int Message = 3;
+}
 public static class ServerToClientSignifiers
 {
     public const int LoginComplete = 1;
@@ -338,6 +360,8 @@ public static class ServerToClientSignifiers
     public const int OpponentPlay = 5;
 
     public const int GameStart = 6;
+
+
 
 }
 
