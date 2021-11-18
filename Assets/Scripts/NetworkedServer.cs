@@ -14,6 +14,8 @@ public class NetworkedServer : MonoBehaviour
     int hostID;
     int socketPort = 5491; //change back to 5491
 
+
+
     LinkedList<PlayerAccount> playerAccounts;
 
     const int PlayerAccountNamePassword = 1;
@@ -208,16 +210,22 @@ public class NetworkedServer : MonoBehaviour
                     string buttonName = csv[2];
                     float posX = float.Parse(csv[3]);
                     float posY = float.Parse(csv[4]);
+                    int playerID = id;
 
                     if (gr.playerID1 == id)
                     {
+
                         Debug.Log("MoveFromP1");
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
+
                     }
                     else if(gr.playerID2 == id)
                     {
                         Debug.Log("MoveFromP2");
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName, gr.playerID1);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
+
                     }
                 }
             }
