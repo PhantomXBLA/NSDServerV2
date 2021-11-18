@@ -25,6 +25,7 @@ public class NetworkedServer : MonoBehaviour
     int playerWaitingForMatchWithID = -1;
 
     LinkedList<GameRoom> gameRooms;
+    LinkedList<ReplayMoves> replayMoves;
 
     int playerTurn = 1;
     
@@ -343,6 +344,11 @@ public class GameRoom
         playerID1 = PlayerID1;
         playerID2 = PlayerID2;
     }
+}
+
+public class ReplayMoves
+{
+
 }
 
 public static class ClientToServerSignifiers
