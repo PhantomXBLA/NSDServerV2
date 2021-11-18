@@ -25,6 +25,8 @@ public class NetworkedServer : MonoBehaviour
     int playerWaitingForMatchWithID = -1;
 
     LinkedList<GameRoom> gameRooms;
+
+    int playerTurn = 1;
     
 
     // Start is called before the first frame update
@@ -232,16 +234,29 @@ public class NetworkedServer : MonoBehaviour
                     if (gr.playerID1 == id)
                     {
 
-                        Debug.Log("MoveFromP1");
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
+                        if(playerTurn == 1)
+                        {
+                            Debug.Log("MoveFromP1");
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
+                            playerTurn = 2;
+
+                        }
+
+
 
                     }
                     else if(gr.playerID2 == id)
                     {
-                        Debug.Log("MoveFromP2");
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
+
+                        if(playerTurn == 2)
+                        {
+                            Debug.Log("MoveFromP2");
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
+                            playerTurn = 1;
+                        }
+
 
                     }
                 }
