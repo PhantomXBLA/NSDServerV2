@@ -212,11 +212,11 @@ public class NetworkedServer : MonoBehaviour
 
                     if (gr.playerID1 == id) 
                     {
-                        SendMessageToClient(ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID2);
                     }
                     else if (gr.playerID2 == id)
                     {
-                        SendMessageToClient(ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID1);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID1);
                     }
 
                 }
