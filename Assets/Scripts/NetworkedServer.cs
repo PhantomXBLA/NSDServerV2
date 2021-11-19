@@ -298,8 +298,28 @@ public class NetworkedServer : MonoBehaviour
             }
         }else if(signifier == ClientToServerSignifiers.JoinReplay)
         {
+            GameRoom gr = GetGameRoomWithClientID(id);
             Debug.Log("we in the replay now");
             playerTurn = 0;
+            SendMessageToClient(ServerToClientSignifiers.GameEnd + "", gr.playerID1);
+            SendMessageToClient(ServerToClientSignifiers.GameEnd + "", gr.playerID2);
+
+            Debug.Log("moves: " + replayMoves.Count);
+
+            for (int i = 0; i < replayMoves.Count + 1;)
+            {
+                if(replayMoves.Count > 0)
+                {
+                    string replayMsg;
+                    replayMsg = replayMoves.First.Value;
+                    SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID1);
+                    SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
+                    replayMoves.RemoveFirst();
+                }
+
+            }
+
+            
         }
 
 
@@ -418,6 +438,8 @@ public static class ServerToClientSignifiers
 
     public const int GameStart = 6;
     public const int GameEnd = 7;
+
+    public const int SendReplay = 8;
 
 
 
