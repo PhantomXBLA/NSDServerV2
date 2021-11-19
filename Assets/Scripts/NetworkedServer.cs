@@ -184,6 +184,15 @@ public class NetworkedServer : MonoBehaviour
             {
                 playerWaitingForMatchWithID = id;
             }
+            else if (playerWaitingForMatchWithID == -2)
+            {
+                GameRoom gr = GetGameRoomWithClientID(id - 1);
+                gr.observer = id;
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.observer);
+
+                playerWaitingForMatchWithID = -1;
+
+            }
             else
             {
                 GameRoom gr = new GameRoom(playerWaitingForMatchWithID, id);
@@ -191,6 +200,8 @@ public class NetworkedServer : MonoBehaviour
 
                 SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.playerID1);
                 SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.playerID2);
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.observer);
+
 
 
 
@@ -220,13 +231,17 @@ public class NetworkedServer : MonoBehaviour
                     string premadeMessage = csv[2];
                     Debug.Log(premadeMessage);
 
+                    int playerID = id;
+
                     if (gr.playerID1 == id) 
                     {
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);
+
                     }
-                    else if (gr.playerID2 == id)
+                    else
                     {
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage, gr.playerID1);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);
+
                     }
 
                 }
@@ -248,17 +263,11 @@ public class NetworkedServer : MonoBehaviour
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
 
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.observer);
+
+
                             string move = buttonName;
                             replayMoves.AddLast(move);
-
-                            if (replayMoves.Contains("Center") || replayMoves.Contains("Bottom Center"))
-                            {
-                                Debug.Log("ye");
-                            }
-                            else
-                            {
-                                Debug.Log("nah");
-                            }
 
 
                             playerTurn = 2;
@@ -276,20 +285,13 @@ public class NetworkedServer : MonoBehaviour
                             Debug.Log("MoveFromP2");
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
-                            
+
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.observer);
+
+
 
                             string move = buttonName;
                             replayMoves.AddLast(move);
-
-                            
-                            if (replayMoves.Contains("Center") || replayMoves.Contains("Bottom Center"))
-                            {
-                                Debug.Log("ye");
-                            }
-                            else
-                            {
-                                Debug.Log("nah");
-                            }
 
                             playerTurn = 1;
                         }
@@ -416,12 +418,13 @@ public class PlayerAccount
 
 public class GameRoom
 {
-    public int playerID1, playerID2;
+    public int playerID1, playerID2, observer;
 
     public GameRoom(int PlayerID1, int PlayerID2)
     {
         playerID1 = PlayerID1;
         playerID2 = PlayerID2;
+
     }
 }
 
