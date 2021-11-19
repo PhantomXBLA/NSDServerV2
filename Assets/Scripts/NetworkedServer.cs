@@ -246,10 +246,27 @@ public class NetworkedServer : MonoBehaviour
                     {
                         SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);
                         SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);
+                    }
+
+                } 
+                
+                else if(GameSignifier == ChatSignifiers.Message)
+                {
+                    string message = csv[2];
+                    int playerID = id;
+
+                    if (gr.playerID1 == id)
+                    {
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.Message + "," + message + "," + playerID, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.Message + "," + message + "," + playerID, gr.playerID1);
 
 
                     }
-
+                    else
+                    {
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.Message + "," + message + "," + playerID, gr.playerID1);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.Message + "," + message + "," + playerID, gr.playerID2);
+                    }
                 }
 
                 if (GameSignifier == GameSignifiers.PlayerMoved)
