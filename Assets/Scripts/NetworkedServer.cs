@@ -246,11 +246,6 @@ public class NetworkedServer : MonoBehaviour
                     {
                         SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);
                         SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);
-<<<<<<< HEAD
-=======
-
-
->>>>>>> main
                     }
 
                 } 
