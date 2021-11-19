@@ -54,6 +54,8 @@ public class NetworkedServer : MonoBehaviour
 
         replayMoves = new LinkedList<string>();
 
+
+
     }
 
     // Update is called once per frame
@@ -306,15 +308,26 @@ public class NetworkedServer : MonoBehaviour
 
             Debug.Log("moves: " + replayMoves.Count);
 
+
+            IEnumerator Timer()
+            {
+
+                string replayMsg;
+                replayMsg = replayMoves.First.Value;
+
+                replayMoves.RemoveFirst();
+
+                yield return new WaitForSeconds(3);
+                SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID1);
+                SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
+
+            }
+
             for (int i = 0; i < replayMoves.Count + 1;)
             {
                 if(replayMoves.Count > 0)
                 {
-                    string replayMsg;
-                    replayMsg = replayMoves.First.Value;
-                    SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID1);
-                    SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
-                    replayMoves.RemoveFirst();
+                    StartCoroutine(Timer());
                 }
                 else
                 {
