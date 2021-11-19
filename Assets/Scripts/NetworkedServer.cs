@@ -14,7 +14,7 @@ public class NetworkedServer : MonoBehaviour
     int hostID;
     int socketPort = 5491; //change back to 5491
 
-
+    bool canSend = true;
 
     LinkedList<PlayerAccount> playerAccounts;
 
@@ -312,29 +312,33 @@ public class NetworkedServer : MonoBehaviour
             IEnumerator Timer()
             {
 
-                string replayMsg;
-                replayMsg = replayMoves.First.Value;
+                for (int i = 0; i < replayMoves.Count + 1;)
+                {
+                    if (replayMoves.Count > 0)
+                    {
+                        string replayMsg;
+                        replayMsg = replayMoves.First.Value;
 
-                replayMoves.RemoveFirst();
+                        replayMoves.RemoveFirst();
 
-                yield return new WaitForSeconds(3);
-                SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID1);
-                SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
+
+                        SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID1);
+                        SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
+                        canSend = false;
+                        yield return new WaitForSeconds(1.5f);
+                        canSend = true;
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                }
 
             }
 
-            for (int i = 0; i < replayMoves.Count + 1;)
-            {
-                if(replayMoves.Count > 0)
-                {
-                    StartCoroutine(Timer());
-                }
-                else
-                {
-                    break;
-                }
+            StartCoroutine(Timer());
 
-            }
 
             
         }
