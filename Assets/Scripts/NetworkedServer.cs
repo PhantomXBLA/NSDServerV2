@@ -316,6 +316,10 @@ public class NetworkedServer : MonoBehaviour
                     SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
                     replayMoves.RemoveFirst();
                 }
+                else
+                {
+                    break;
+                }
 
             }
 
