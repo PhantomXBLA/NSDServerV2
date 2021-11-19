@@ -249,7 +249,7 @@ public class NetworkedServer : MonoBehaviour
                             string move = buttonName;
                             replayMoves.AddLast(move);
 
-                            if (replayMoves.Contains("Center"))
+                            if (replayMoves.Contains("Center") || replayMoves.Contains("Bottom Center"))
                             {
                                 Debug.Log("ye");
                             }
@@ -274,6 +274,21 @@ public class NetworkedServer : MonoBehaviour
                             Debug.Log("MoveFromP2");
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
+                            
+
+                            string move = buttonName;
+                            replayMoves.AddLast(move);
+
+                            
+                            if (replayMoves.Contains("Center") || replayMoves.Contains("Bottom Center"))
+                            {
+                                Debug.Log("ye");
+                            }
+                            else
+                            {
+                                Debug.Log("nah");
+                            }
+
                             playerTurn = 1;
                         }
 
@@ -281,6 +296,10 @@ public class NetworkedServer : MonoBehaviour
                     }
                 }
             }
+        }else if(signifier == ClientToServerSignifiers.JoinReplay)
+        {
+            Debug.Log("we in the replay now");
+            playerTurn = 0;
         }
 
 
@@ -372,6 +391,9 @@ public static class ClientToServerSignifiers
 
     public const int JoinGameRoomQueue = 3;
     public const int InGame = 4;
+
+    public const int JoinReplay = 5;
+
 }
 
 public static class GameSignifiers
@@ -395,6 +417,7 @@ public static class ServerToClientSignifiers
     public const int OpponentPlay = 5;
 
     public const int GameStart = 6;
+    public const int GameEnd = 7;
 
 
 
