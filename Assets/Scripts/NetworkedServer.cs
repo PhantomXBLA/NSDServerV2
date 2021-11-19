@@ -179,11 +179,12 @@ public class NetworkedServer : MonoBehaviour
         else if (signifier == ClientToServerSignifiers.JoinGameRoomQueue)
         {
             Debug.Log("queue joined baby");
-            
-            if(playerWaitingForMatchWithID == -1)
+
+            if (playerWaitingForMatchWithID == -1)
             {
                 playerWaitingForMatchWithID = id;
             }
+
             else if (playerWaitingForMatchWithID == -2)
             {
                 GameRoom gr = GetGameRoomWithClientID(id - 1);
@@ -193,6 +194,7 @@ public class NetworkedServer : MonoBehaviour
                 playerWaitingForMatchWithID = -1;
 
             }
+
             else
             {
                 GameRoom gr = new GameRoom(playerWaitingForMatchWithID, id);
@@ -226,7 +228,7 @@ public class NetworkedServer : MonoBehaviour
                     SendMessageToClient(ServerToClientSignifiers.OpponentPlay + "", gr.playerID1);
                 }
 
-            if(GameSignifier == ChatSignifiers.PremadeMessage)
+                if (GameSignifier == ChatSignifiers.PremadeMessage)
                 {
                     string premadeMessage = csv[2];
                     Debug.Log(premadeMessage);
@@ -236,11 +238,15 @@ public class NetworkedServer : MonoBehaviour
                     if (gr.playerID1 == id) 
                     {
                         SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);
+
 
                     }
                     else
                     {
                         SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);
+
 
                     }
 
