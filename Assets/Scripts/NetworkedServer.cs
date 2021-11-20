@@ -325,7 +325,21 @@ public class NetworkedServer : MonoBehaviour
                     }
                 }
             }
-        }else if(signifier == ClientToServerSignifiers.JoinReplay)
+        }
+        
+        else if(signifier == ClientToServerSignifiers.WinForX)
+        {
+            GameRoom gr = GetGameRoomWithClientID(id);
+            SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForX, gr.playerID1);
+            SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForX, gr.playerID2);
+            playerTurn = 0;
+
+        }
+
+
+
+
+        else if(signifier == ClientToServerSignifiers.JoinReplay)
         {
             GameRoom gr = GetGameRoomWithClientID(id);
             Debug.Log("we in the replay now");
@@ -462,6 +476,10 @@ public static class ClientToServerSignifiers
     public const int InGame = 4;
 
     public const int JoinReplay = 5;
+
+    public const int WinForX = 6;
+    public const int WinForO = 7;
+    public const int Tie = 8;
 
 }
 
