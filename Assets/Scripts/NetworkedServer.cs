@@ -200,9 +200,11 @@ public class NetworkedServer : MonoBehaviour
                 GameRoom gr = new GameRoom(playerWaitingForMatchWithID, id);
                 gameRooms.AddLast(gr);
 
-                SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.playerID1);
-                SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.playerID2);
-                SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.observer);
+                int playerID = id;
+
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 1, gr.playerID1);
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 2, gr.playerID2);
+                //SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 3, gr.observer);
 
 
 
