@@ -336,6 +336,15 @@ public class NetworkedServer : MonoBehaviour
 
         }
 
+        else if (signifier == ClientToServerSignifiers.WinForO)
+        {
+            GameRoom gr = GetGameRoomWithClientID(id);
+            SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForO, gr.playerID1);
+            SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForO, gr.playerID2);
+            playerTurn = 0;
+
+        }
+
 
 
 
