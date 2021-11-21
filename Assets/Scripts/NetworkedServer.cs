@@ -200,7 +200,7 @@ public class NetworkedServer : MonoBehaviour
                 GameRoom gr = new GameRoom(playerWaitingForMatchWithID, id);
                 gameRooms.AddLast(gr);
 
-                int playerID = id;
+                //int playerID = id;
 
                 SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 1, gr.playerID1);
                 SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 2, gr.playerID2);
@@ -209,7 +209,7 @@ public class NetworkedServer : MonoBehaviour
 
 
 
-                playerWaitingForMatchWithID = -1;
+                playerWaitingForMatchWithID = -2;
             }
 
             
@@ -436,7 +436,7 @@ public class NetworkedServer : MonoBehaviour
     {
         foreach(GameRoom gr in gameRooms)
         {
-            if(gr.playerID1 == id || gr.playerID2 == id)
+            if(gr.playerID1 == id || gr.playerID2 == id) //maybe?
             {
                 return gr;
             }
@@ -472,6 +472,7 @@ public class GameRoom
     {
         playerID1 = PlayerID1;
         playerID2 = PlayerID2;
+        //observer = Observer;
 
     }
 }
