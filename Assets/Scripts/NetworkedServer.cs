@@ -189,7 +189,7 @@ public class NetworkedServer : MonoBehaviour
             {
                 GameRoom gr = GetGameRoomWithClientID(id - 1);
                 gr.observer = id;
-                SendMessageToClient(ServerToClientSignifiers.GameStart + "", gr.observer);
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 3, gr.observer);
 
                 playerWaitingForMatchWithID = -1;
 
