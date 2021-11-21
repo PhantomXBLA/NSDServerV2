@@ -185,13 +185,13 @@ public class NetworkedServer : MonoBehaviour
                 playerWaitingForMatchWithID = id;
             }
 
-            else if (playerWaitingForMatchWithID == -2)
+            else if (playerWaitingForMatchWithID == -2) // we need an observer to join the game, after starting the game, we set the playerwaitingformatchwithID variable to -2 to trigger this code which allows the observer to join the game
             {
                 GameRoom gr = GetGameRoomWithClientID(id - 1);
                 gr.observer = id;
-                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 3, gr.observer);
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 3, gr.observer); // calls the gamestart for the observer
 
-                playerWaitingForMatchWithID = -1;
+                playerWaitingForMatchWithID = -1; //sets it back to -1 so another game can start
 
             }
 
@@ -200,11 +200,8 @@ public class NetworkedServer : MonoBehaviour
                 GameRoom gr = new GameRoom(playerWaitingForMatchWithID, id);
                 gameRooms.AddLast(gr);
 
-                //int playerID = id;
-
-                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 1, gr.playerID1);
-                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 2, gr.playerID2);
-                //SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 3, gr.observer);
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 1, gr.playerID1);   //starts the game for both clients in queue
+                SendMessageToClient(ServerToClientSignifiers.GameStart + "," + 2, gr.playerID2);   //starts the game for both clients in queue
 
 
 
@@ -239,15 +236,15 @@ public class NetworkedServer : MonoBehaviour
 
                     if (gr.playerID1 == id) 
                     {
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);     //sends the premade messages to p1 and p2 but not the observer
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);     //sends the premade messages to p1 and p2 but not the observer
 
 
                     }
                     else
                     {
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);
-                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID1);  //sends the premade messages to p1 and p2 but not the observer
+                        SendMessageToClient(ClientToServerSignifiers.InGame + "," + ChatSignifiers.PremadeMessage + "," + premadeMessage + "," + playerID, gr.playerID2);  //sends the premade messages to p1 and p2 but not the observer
                     }
 
                 } 
@@ -285,10 +282,10 @@ public class NetworkedServer : MonoBehaviour
                         if(playerTurn == 1)
                         {
                             Debug.Log("MoveFromP1");
-                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);
-                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
-
-                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.observer);
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);      //sends the move at the received position and button back to the client and the observer
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);      //sends the move at the received position and button back to the client and the observer
+                                                                                                                                                                                                    
+                            SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.observer);       //sends the move at the received position and button back to the client and the observer
 
 
                             string move = buttonName;
@@ -436,7 +433,7 @@ public class NetworkedServer : MonoBehaviour
     {
         foreach(GameRoom gr in gameRooms)
         {
-            if(gr.playerID1 == id || gr.playerID2 == id) //maybe?
+            if(gr.playerID1 == id || gr.playerID2 == id)
             {
                 return gr;
             }
