@@ -279,7 +279,7 @@ public class NetworkedServer : MonoBehaviour
                     if (gr.playerID1 == id)
                     {
 
-                        if(playerTurn == 1)
+                        if(playerTurn == PlayerIDCheck.PlayerID1)
                         {
                             Debug.Log("MoveFromP1");
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID2);      //sends the move at the received position and button back to the client and the observer
@@ -292,7 +292,7 @@ public class NetworkedServer : MonoBehaviour
                             replayMoves.AddLast(move);
 
 
-                            playerTurn = 2;
+                            playerTurn = PlayerIDCheck.PlayerID2;
 
                         }
 
@@ -302,7 +302,7 @@ public class NetworkedServer : MonoBehaviour
                     else if(gr.playerID2 == id)
                     {
 
-                        if(playerTurn == 2)
+                        if(playerTurn == PlayerIDCheck.PlayerID2)
                         {
                             Debug.Log("MoveFromP2");
                             SendMessageToClient(ClientToServerSignifiers.InGame + "," + GameSignifiers.PlayerMoved + "," + posX + "," + posY + "," + buttonName + "," + playerID, gr.playerID1);
@@ -315,7 +315,7 @@ public class NetworkedServer : MonoBehaviour
                             string move = buttonName;
                             replayMoves.AddLast(move);
 
-                            playerTurn = 1;
+                            playerTurn = PlayerIDCheck.PlayerID1;
                         }
 
 
@@ -329,7 +329,7 @@ public class NetworkedServer : MonoBehaviour
             GameRoom gr = GetGameRoomWithClientID(id);
             SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForX, gr.playerID1);
             SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForX, gr.playerID2);
-            playerTurn = 0;
+            playerTurn = PlayerIDCheck.PlayerIDNull;
 
         }
 
@@ -338,7 +338,7 @@ public class NetworkedServer : MonoBehaviour
             GameRoom gr = GetGameRoomWithClientID(id);
             SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForO, gr.playerID1);
             SendMessageToClient(ClientToServerSignifiers.InGame + "," + ClientToServerSignifiers.WinForO, gr.playerID2);
-            playerTurn = 0;
+            playerTurn = PlayerIDCheck.PlayerIDNull;
 
         }
 
@@ -349,7 +349,7 @@ public class NetworkedServer : MonoBehaviour
         {
             GameRoom gr = GetGameRoomWithClientID(id);
             Debug.Log("we in the replay now");
-            playerTurn = 0;
+            playerTurn = PlayerIDCheck.PlayerIDNull;
             SendMessageToClient(ServerToClientSignifiers.GameEnd + "", gr.playerID1);
             SendMessageToClient(ServerToClientSignifiers.GameEnd + "", gr.playerID2);
 
@@ -517,6 +517,15 @@ public static class ServerToClientSignifiers
 
 
 
+}
+
+public static class PlayerIDCheck
+{
+
+    public const int PlayerIDNull = 0;
+    public const int PlayerID1 = 1;
+    public const int PlayerID2 = 2;
+    public const int ObserverID = 3;
 }
 
 
