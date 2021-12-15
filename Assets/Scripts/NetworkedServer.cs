@@ -29,6 +29,9 @@ public class NetworkedServer : MonoBehaviour
     int playerTurn = 1;
 
     LinkedList<string> replayMoves;
+
+    float replayMoveTimer = 0;
+    float desiredDelayLength = 3.5f;
     
 
     // Start is called before the first frame update
@@ -356,38 +359,40 @@ public class NetworkedServer : MonoBehaviour
             Debug.Log("moves: " + replayMoves.Count);
 
 
-            IEnumerator Timer()
+            for (int i = 0; i < replayMoves.Count + 1;)
             {
-
-                for (int i = 0; i < replayMoves.Count + 1;)
+                if (replayMoves.Count > 0)
                 {
-                    if (replayMoves.Count > 0)
+                    string replayMsg;
+                    replayMsg = replayMoves.First.Value;
+
+                    replayMoves.RemoveFirst();
+
+
+                    SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID1);
+                    SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
+                    canSend = false;
+
+                    while (replayMoveTimer < desiredDelayLength)
                     {
-                        string replayMsg;
-                        replayMsg = replayMoves.First.Value;
+                        replayMoveTimer += (Time.deltaTime / desiredDelayLength);
+                        Debug.Log(replayMoveTimer);
 
-                        replayMoves.RemoveFirst();
+                        if (replayMoveTimer >= desiredDelayLength)
+                        {
+                            canSend = true;
+                            replayMoveTimer = 0;
+                            break;
+                        }
 
-
-                        SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID1);
-                        SendMessageToClient(ServerToClientSignifiers.SendReplay + "," + replayMsg, gr.playerID2);
-                        canSend = false;
-                        yield return new WaitForSeconds(1.5f);
-                        canSend = true;
                     }
-                    else
-                    {
-                        break;
-                    }
-
+                }
+                else
+                {
+                    break;
                 }
 
-            }
-
-            StartCoroutine(Timer());
-
-
-            
+            } 
         }
 
 
